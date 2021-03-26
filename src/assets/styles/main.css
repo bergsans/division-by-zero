@@ -1,0 +1,30 @@
+@font-face {
+  font-family: 'PixelFont';
+  src: url(../fonts/pixel-font7.regular.ttf) format('truetype');
+}
+
+body {
+  background-color: black;
+}
+
+*:focus { outline: none; }
+
+canvas {
+  cursor: none;
+  position: absolute;
+  width: 1152px;
+  height: 768px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+img {
+  position: absolute;
+  width: 500;
+  height: 500;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+}
