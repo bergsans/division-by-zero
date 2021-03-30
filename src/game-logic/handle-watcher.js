@@ -1,9 +1,10 @@
-import {
-  PLAYER_FACES_LEFT,
-  SPRITE_CHANGE,
-} from '../constants';
+import { SPRITE_CHANGE } from '../constants';
 import { moveWatcherX, moveWatcherY } from './move-watcher';
 import { isAHit } from './common';
+import {
+  isPlayerSummoning,
+  isPlayerFacingLeft,
+} from './helpers';
 import getImageData from '../renderers/image-data';
 
 const { spriteSheet } = getImageData();
@@ -16,17 +17,17 @@ const handleWatcher = (state) => (player) => {
       && !(player.remote.spriteCount >= maxSpriteCount)
       ? player.remote.spriteCount + SPRITE_CHANGE
       : 0;
-    if (spriteCount >= 12 && player.remote.state.startsWith('PLAYER_SUMMON_WATCHER')) {
+    if (spriteCount >= 12 && isPlayerSummoning(state)) {
       return {
         ...player,
         remoteActiveDone: true,
         remote: {
           ...player.remote,
-          x: player.faces === PLAYER_FACES_LEFT
+          x: isPlayerFacingLeft(state)
             ? player.remote.x
             : player.remote.x + 50,
           spriteCount: 0,
-          state: player.faces === PLAYER_FACES_LEFT
+          state: isPlayerFacingLeft(state)
             ? 'PLAYER_WATCHER_IDLE_LEFT'
             : 'PLAYER_WATCHER_IDLE_RIGHT',
         },

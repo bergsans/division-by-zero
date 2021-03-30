@@ -5,25 +5,30 @@ import {
 } from '../constants';
 import updateHp from './update-hp';
 import shotOnSight from './shot-on-sight';
+import {
+  isEnemyAttacking,
+  isEnemyFacingLeft,
+} from './helpers';
 
 const handleEnemies = (state) => {
   const enemies = state.level[state.player.currentScreen].enemies
     .map(
-      (enemy) => (enemy.state.includes('ATTACK')
-        ? {
-          ...enemy,
-          ...updateEntity(enemy, state.level[state.player.currentScreen].objects),
-          x: enemy.x,
-          shotInterval: enemy.shotInterval + 1,
-        }
-        : {
-          ...enemy,
-          ...updateEntity(enemy, state.level[state.player.currentScreen].objects),
-          faces: enemy.speed > 0
-            ? ENEMY_FACES_RIGHT
-            : ENEMY_FACES_LEFT,
-          state: enemy.faces === ENEMY_FACES_LEFT ? 'LEFT' : 'RIGHT',
-        }),
+      (enemy) => (
+        isEnemyAttacking(enemy)
+          ? {
+            ...enemy,
+            ...updateEntity(enemy, state.level[state.player.currentScreen].objects),
+            x: enemy.x,
+            shotInterval: enemy.shotInterval + 1,
+          }
+          : {
+            ...enemy,
+            ...updateEntity(enemy, state.level[state.player.currentScreen].objects),
+            faces: enemy.speed > 0
+              ? ENEMY_FACES_RIGHT
+              : ENEMY_FACES_LEFT,
+            state: isEnemyFacingLeft(enemy),
+          }),
     )
     .map(
       (enemy, i) => updateHp(state.player, state.level[state.player.currentScreen].hits, i, enemy),

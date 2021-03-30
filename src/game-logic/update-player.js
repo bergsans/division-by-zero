@@ -17,13 +17,22 @@ import modifyHealth from './modify-health';
 import updatePlayerPickup from './update-player-pickup';
 import handleWatcher from './handle-watcher';
 import terminateIfDeath from './terminate-if-death';
+import {
+  isPlayerHurt,
+  isPlayerDead,
+  isPlayerJumping,
+  isPlayerSummoning,
+  isPlayerFacingLeft,
+  isPlayerWatcherAttacking,
+  onlyType1Enemies,
+} from './helpers';
 
 const { spriteSheet } = getImageData();
 
 const updatePlayer = ({ state, assets }) => {
   const maxSpriteCount = spriteSheet[state.player.state].length;
   let spriteCount;
-  if (state.player.state.includes('JUMP')) {
+  if (isPlayerJumping(state)) {
     if (state.player.spriteCount + SPRITE_CHANGE < maxSpriteCount
     && !(state.player.spriteCount >= maxSpriteCount)) {
       spriteCount = state.player.spriteCount + SPRITE_CHANGE;
@@ -45,7 +54,7 @@ const updatePlayer = ({ state, assets }) => {
       },
     };
   }
-  if (state.player.death) {
+  if (isPlayerDead(state)) {
     return {
       assets,
       state: {
@@ -57,14 +66,14 @@ const updatePlayer = ({ state, assets }) => {
       },
     };
   }
-  if (state.player.state.includes('HURT') && state.player.spriteCount >= maxSpriteCount - 1) {
+  if (isPlayerHurt(state) && state.player.spriteCount >= maxSpriteCount - 1) {
     return {
       assets,
       state: {
         ...state,
         player: {
           ...state.player,
-          state: state.player.faces === PLAYER_FACES_LEFT
+          state: isPlayerFacingLeft(state.player)
             ? `PLAYER_${state.player.specialState}IDLE_LEFT`
             : `PLAYER_${state.player.specialState}IDLE_RIGHT`,
           spriteCount: 0,
@@ -72,7 +81,7 @@ const updatePlayer = ({ state, assets }) => {
       },
     };
   }
-  if (state.player.state.includes('HURT') && state.player.spriteCount < maxSpriteCount) {
+  if (isPlayerHurt(state) && state.player.spriteCount < maxSpriteCount) {
     return {
       assets,
       state: {
@@ -81,14 +90,14 @@ const updatePlayer = ({ state, assets }) => {
           ...state.player,
           spriteCount,
           y: state.player.y - 0.5,
-          x: state.player.faces === PLAYER_FACES_LEFT
+          x: isPlayerFacingLeft(state.player)
             ? state.player.x + 8
             : state.player.x - 8,
         },
       },
     };
   }
-  if (state.player.state.startsWith('PLAYER_SUMMON')) {
+  if (isPlayerSummoning(state)) {
     if (state.player.spriteCount >= 12) {
       return {
         assets,
@@ -97,20 +106,20 @@ const updatePlayer = ({ state, assets }) => {
           player: {
             ...state.player,
             spriteCount: 0,
-            state: state.player.faces === PLAYER_FACES_LEFT
+            state: isPlayerFacingLeft(state.player)
               ? 'PLAYER_IDLE_LEFT'
               : 'PLAYER_IDLE_RIGHT',
             remote: {
               ...state.player.remote,
-              x: state.player.faces === PLAYER_FACES_LEFT
+              x: isPlayerFacingLeft(state.player)
                 ? state.player.x - 100
                 : state.player.x + 100,
               y: state.player.y,
               spriteCount: 0,
-              faces: state.player.faces === PLAYER_FACES_LEFT
+              faces: isPlayerFacingLeft(state.player)
                 ? PLAYER_FACES_LEFT
                 : 'PLAYER_FACES_RIGHT',
-              state: state.player.faces === PLAYER_FACES_LEFT
+              state: isPlayerFacingLeft(state.player)
                 ? 'PLAYER_SUMMON_WATCHER_LEFT'
                 : 'PLAYER_SUMMON_WATCHER_RIGHT',
             },
@@ -137,7 +146,7 @@ const updatePlayer = ({ state, assets }) => {
   }
   if (
     state.player.remote.spriteCount >= 15
-    && state.player.remote.state.startsWith('PLAYER_WATCHER_ATTACK')
+    && isPlayerWatcherAttacking(state)
   ) {
     return {
       state: handleShotingWatcher(state, state.player),
@@ -162,7 +171,7 @@ const updatePlayer = ({ state, assets }) => {
         modifyHealth(
           state,
           spriteSheet[player.state][Math.floor(player.spriteCount)],
-          state.level[player.currentScreen].enemies.filter((e) => ['TYPE_1'].includes(e.type)),
+          onlyType1Enemies(state),
         ),
         finalMovement,
         turnPlayerIfNeeded,

@@ -1,5 +1,5 @@
-import { PLAYER_FACES_LEFT } from '../constants';
 import { isAHit } from './common';
+import { isPlayerFacingLeft } from './helpers';
 
 const modifyHealth = (state, [,, w, h], enemies) => (player) => {
   const playerIsHurt = enemies.some(
@@ -24,7 +24,7 @@ const modifyHealth = (state, [,, w, h], enemies) => (player) => {
   ) {
     return {
       ...player,
-      state: player.faces === PLAYER_FACES_LEFT
+      state: isPlayerFacingLeft(state)
         ? `PLAYER_${player.specialState}HURT_LEFT`
         : `PLAYER_${player.specialState}HURT_RIGHT`,
       hp: player.hp - 1,

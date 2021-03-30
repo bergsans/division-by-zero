@@ -1,4 +1,5 @@
 import { PLAYER_WATCHER_SPECIAL_STATE } from '../constants';
+import { nextScreen } from './helpers';
 
 const retrieveMessage = (player, items) => {
   const hasHitItem = player.hasHitItem > -1
@@ -95,7 +96,7 @@ const handleItems = (state) => {
   ) {
     localStorage.setItem('load', 'false');
     localStorage.setItem('state', JSON.stringify(state));
-    const currentScreen = state.level[state.player.currentScreen].items[state.player.hasHitItem].next;
+    const currentScreen = nextScreen(state);
     const level = {
       ...state.level,
       [currentScreen]: {

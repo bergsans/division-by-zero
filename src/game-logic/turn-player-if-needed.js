@@ -1,7 +1,10 @@
-import { PLAYER_FACES_LEFT } from '../constants';
+import {
+  isPlayerFacingLeft,
+  isPlayerWatcherFacingLeft,
+} from './helpers';
 
 const turnPlayerIfNeeded = (player) => {
-  const state = player.remote.faces === PLAYER_FACES_LEFT
+  const state = isPlayerWatcherFacingLeft(player)
     ? 'PLAYER_IDLE_LEFT'
     : 'PLAYER_IDLE_RIGHT';
   if (player.velX === 0 && !player.jumping) {
@@ -14,7 +17,7 @@ const turnPlayerIfNeeded = (player) => {
     return {
       ...player,
       state:
-        player.faces === PLAYER_FACES_LEFT
+        isPlayerFacingLeft(player)
           ? `PLAYER_${player.specialState}WALK_LEFT`
           : `PLAYER_${player.specialState}WALK_RIGHT`,
     };

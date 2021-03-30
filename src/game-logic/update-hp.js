@@ -1,4 +1,4 @@
-import { PLAYER_FACES_LEFT } from '../constants';
+import { isPlayerFacingLeft } from './helpers';
 
 const updateHp = (player, hits, i, enemy) => {
   const hitE = hits.some(
@@ -7,7 +7,7 @@ const updateHp = (player, hits, i, enemy) => {
   if (hitE) {
     return {
       ...enemy,
-      x: player.faces === PLAYER_FACES_LEFT
+      x: isPlayerFacingLeft(player)
         ? enemy.x - 100
         : enemy.x + 100,
       y: enemy.y - 80,

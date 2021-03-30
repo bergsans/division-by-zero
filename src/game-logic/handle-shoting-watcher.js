@@ -1,6 +1,7 @@
-import { PLAYER_FACES_LEFT } from '../constants';
+import { isPlayerWatcherFacingLeft } from './helpers';
+import { SHOT_SPEED } from '../constants';
 
-const handleShotingWatcher = (state, player) => ({
+export default (state, player) => ({
   ...state,
   player: {
     ...player,
@@ -10,7 +11,7 @@ const handleShotingWatcher = (state, player) => ({
     remote: {
       ...player.remote,
       spriteCount: 0,
-      state: player.remote.faces === PLAYER_FACES_LEFT
+      state: isPlayerWatcherFacingLeft(player)
         ? 'PLAYER_WATCHER_IDLE_LEFT'
         : 'PLAYER_WATCHER_IDLE_RIGHT',
     },
@@ -23,20 +24,19 @@ const handleShotingWatcher = (state, player) => ({
         ...state.level[player.currentScreen].shots,
         {
           x:
-              player.remote.faces === PLAYER_FACES_LEFT
-                ? player.remote.x - 50
-                : player.remote.x + 120,
+           isPlayerWatcherFacingLeft(player)
+             ? player.remote.x - 50
+             : player.remote.x + 120,
           y: player.remote.y + 40,
           w: 18,
           h: 18,
           hasHit: -1,
           hasHitObstacle: false,
           type: 'shot',
-          speed: player.remote.faces === PLAYER_FACES_LEFT ? -18 : 18,
+          speed: isPlayerWatcherFacingLeft(player) ? -SHOT_SPEED : SHOT_SPEED,
           status: true,
         },
       ],
     },
   },
 });
-export default handleShotingWatcher;

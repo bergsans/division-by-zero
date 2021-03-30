@@ -35,6 +35,8 @@ export const KEY_H = 'h';
 export const KEY_I = 'i';
 export const KEY_R = 'r';
 
+export const SHOT_SPEED = 18;
+
 export const IMG_MENU_HEADER = 3;
 export const IMG_MENU_ITEMS = 4;
 export const IMG_MENU_ARROW = 5;
