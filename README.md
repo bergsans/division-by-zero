@@ -1,6 +1,6 @@
 # Division By Zero
 
-[Play an online version](https://herebeseaswines.net/division-by-zero) at Here be seaswines.
+[Play online version](https://bergsans.github.io/division-by-zero) at Here be seaswines.
 
 ![screenshot](screenshot.gif)
 
