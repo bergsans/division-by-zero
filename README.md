@@ -1,6 +1,6 @@
 # Division By Zero
 
-[Play online version](https://bergsans.net/division-by-zero)
+[Play online version](https://bergsans.github.io/division-by-zero/)
 
 ![screenshot](screenshot.gif)
 
